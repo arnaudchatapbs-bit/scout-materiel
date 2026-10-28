@@ -1,0 +1,56 @@
+import { Routes } from '@angular/router';
+import { adminGuard, anonymousGuard, authGuard } from './core/auth';
+
+// Pages chargées à la demande : le premier affichage sur téléphone reste léger.
+export const routes: Routes = [
+  { path: 'connexion', canActivate: [anonymousGuard], title: 'Connexion · Scout Matériel',
+    loadComponent: () => import('./pages/account/login').then((m) => m.Login) },
+  { path: 'mot-de-passe-oublie', canActivate: [anonymousGuard], title: 'Mot de passe oublié · Scout Matériel',
+    loadComponent: () => import('./pages/account/forgot-password').then((m) => m.ForgotPassword) },
+  { path: 'nouveau-mot-de-passe', title: 'Choisir un mot de passe · Scout Matériel',
+    loadComponent: () => import('./pages/account/reset-password').then((m) => m.ResetPassword) },
+  {
+    path: '',
+    canActivate: [authGuard],
+    children: [
+      { path: '', title: 'Scout Matériel', loadComponent: () => import('./pages/home').then((m) => m.Home) },
+      { path: 'materiel', title: 'Matériel · Scout Matériel',
+        loadComponent: () => import('./pages/inventory/item-list').then((m) => m.ItemList) },
+      { path: 'materiel/:id', title: 'Objet · Scout Matériel',
+        loadComponent: () => import('./pages/inventory/item-detail').then((m) => m.ItemDetail) },
+      { path: 'panier', title: 'Panier · Scout Matériel',
+        loadComponent: () => import('./pages/loans/cart').then((m) => m.Cart) },
+      { path: 'demandes', title: 'Mes demandes · Scout Matériel',
+        loadComponent: () => import('./pages/loans/my-requests').then((m) => m.MyRequests) },
+      { path: 'demandes/:id', title: 'Demande · Scout Matériel',
+        loadComponent: () => import('./pages/loans/request-detail').then((m) => m.RequestDetail) },
+      { path: 'compte/mot-de-passe', title: 'Mon mot de passe · Scout Matériel',
+        loadComponent: () => import('./pages/account/change-password').then((m) => m.ChangePassword) },
+      {
+        path: 'gestion',
+        canActivate: [adminGuard],
+        children: [
+          { path: '', title: 'Gestion · Scout Matériel', loadComponent: () => import('./pages/admin/admin-home').then((m) => m.AdminHome) },
+          { path: 'demandes', title: 'Demandes · Gestion',
+            loadComponent: () => import('./pages/admin/manage-requests').then((m) => m.ManageRequests) },
+          { path: 'demandes/:id', title: 'Demande · Gestion',
+            loadComponent: () => import('./pages/admin/manage-request').then((m) => m.ManageRequest) },
+          { path: 'materiel', title: 'Matériel · Gestion',
+            loadComponent: () => import('./pages/admin/manage-items').then((m) => m.ManageItems) },
+          { path: 'materiel/:id', title: 'Objet · Gestion',
+            loadComponent: () => import('./pages/admin/item-form').then((m) => m.ItemForm) },
+          { path: 'categories', title: 'Catégories · Gestion',
+            loadComponent: () => import('./pages/admin/categories').then((m) => m.Categories) },
+          { path: 'comptes', title: 'Comptes · Gestion',
+            loadComponent: () => import('./pages/admin/accounts').then((m) => m.Accounts) },
+          { path: 'comptes/:id', title: 'Compte · Gestion',
+            loadComponent: () => import('./pages/admin/account-form').then((m) => m.AccountForm) },
+          { path: 'import', title: 'Import Excel · Gestion',
+            loadComponent: () => import('./pages/admin/import').then((m) => m.Import) },
+        ],
+      },
+      { path: '**', title: 'Page introuvable · Scout Matériel',
+        loadComponent: () => import('./pages/not-found').then((m) => m.NotFound) },
+    ],
+  },
+];
