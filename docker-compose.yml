@@ -1,0 +1,40 @@
+# Scout Matériel (Java) sur Raspberry Pi — voir DEPLOIEMENT.md
+#
+# L'application Java tourne directement sur le Pi (service systemd « scout-materiel ») : il n'existe
+# pas d'image Docker légère avec Java pour l'ARMv6 du Pi 1. Docker ne sert qu'à Caddy et DuckDNS.
+#   docker compose up -d                       → Caddy (front-end + HTTPS)
+#   docker compose --profile internet up -d    → + mise à jour DuckDNS (accès Internet)
+services:
+  caddy:
+    image: caddy:2-alpine
+    # Réseau de l'hôte : Caddy joint l'application sur 127.0.0.1:8000 et écoute sur 80/443
+    network_mode: host
+    environment:
+      # « :- » couvre aussi le cas SITE_DOMAIN= (vide) : Caddy, lui, n'applique ses valeurs par
+      # défaut que si la variable est absente, et une adresse vide le fait planter en boucle.
+      SITE_ADDRESS: ${SITE_DOMAIN:-:80}
+      APP_PORT: ${PORT:-8000}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./app/frontend:/srv/frontend:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    restart: unless-stopped
+    logging: &logging
+      driver: json-file
+      options: { max-size: "5m", max-file: "3" }
+
+  duckdns:
+    # Met à jour l'adresse IP de la box chez DuckDNS toutes les 5 minutes
+    image: alpine:3.20
+    profiles: [internet]
+    env_file: .env
+    volumes:
+      - ./deploy/duckdns.sh:/duckdns.sh:ro
+    command: ["sh", "/duckdns.sh"]
+    restart: unless-stopped
+    logging: *logging
+
+volumes:
+  caddy_data:
+  caddy_config:

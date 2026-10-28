@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Scout Matériel</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#2e7d32">
+  <link rel="manifest" href="pwa/manifest.webmanifest">
+  <link rel="icon" href="pwa/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="pwa/icon-192.png">
+  <meta name="apple-mobile-web-app-title" content="Matériel">
+</head>
+<body>
+  <app-root>
+    <p class="boot">⛺ Chargement…</p>
+  </app-root>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js").catch(() => {});
+    }
+  </script>
+</body>
+</html>

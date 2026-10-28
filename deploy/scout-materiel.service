@@ -1,0 +1,23 @@
+# Service systemd de Scout Matériel (Java). Installé par scripts/install.sh, qui remplace
+# __USER__ et __DIR__ ; ne pas copier ce fichier tel quel.
+[Unit]
+Description=Scout Matériel (Java)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=__USER__
+WorkingDirectory=__DIR__
+EnvironmentFile=__DIR__/.env
+Environment=DATABASE_PATH=__DIR__/data/db.sqlite3
+Environment=BACKUP_DIR=__DIR__/data/backups
+ExecStart=__DIR__/scripts/scout-materiel.sh
+Restart=on-failure
+RestartSec=10
+# Le démarrage de la JVM sur un Pi 1 peut prendre une à deux minutes
+TimeoutStartSec=300
+# Laisse le temps de finir les requêtes et de fermer la base proprement
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target

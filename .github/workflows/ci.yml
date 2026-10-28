@@ -1,0 +1,92 @@
+# Tests, puis paquet pour le Raspberry Pi publié dans l'onglet « Releases ».
+# Le Pi télécharge ce paquet avec scripts/deploy.sh : il ne compile rien lui-même.
+name: Tests et paquet Raspberry Pi
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  backend:
+    name: Backend (Java 11, comme sur le Pi)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          # Java 11 : la seule version disponible pour l'ARMv6 du Pi 1 (Zulu 11)
+          distribution: zulu
+          java-version: "11"
+          cache: maven
+      - name: Tests et construction
+        run: mvn -B -f backend/pom.xml verify
+      - uses: actions/upload-artifact@v4
+        with:
+          name: backend
+          path: |
+            backend/target/scout-materiel.jar
+            backend/target/lib/
+
+  frontend:
+    name: Front-end (Angular)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+        working-directory: frontend
+      - run: npx ng build
+        working-directory: frontend
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frontend
+          path: frontend/dist/frontend/browser/
+
+  checks:
+    name: Scripts et Caddyfile
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: shellcheck
+        run: shellcheck scripts/*.sh deploy/duckdns.sh
+      - name: Caddyfile valide
+        run: |
+          docker run --rm -e SITE_ADDRESS=:80 -e APP_PORT=8000 \
+            -v "$PWD/deploy/Caddyfile:/etc/caddy/Caddyfile:ro" \
+            caddy:2-alpine caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
+
+  release:
+    name: Paquet pour le Pi
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [backend, frontend, checks]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: backend
+          path: paquet
+      - uses: actions/download-artifact@v4
+        with:
+          name: frontend
+          path: paquet/frontend
+      - name: Archive
+        run: |
+          cd paquet
+          tar -czf ../scout-materiel-pi.tar.gz scout-materiel.jar lib frontend
+      - name: Publication (dernière version)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="v1.0.${{ github.run_number }}"
+          gh release create "$TAG" scout-materiel-pi.tar.gz \
+            --repo "${{ github.repository }}" --target "${{ github.sha }}" \
+            --title "Version $TAG" --notes "Paquet construit depuis ${{ github.sha }}." --latest
