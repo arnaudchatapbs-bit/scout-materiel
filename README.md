@@ -12,13 +12,14 @@ Réécriture de [scout-materiel](https://github.com/arnaudchata-appli/scout-mate
 
 Prérequis : JDK 11 ou plus, Maven 3.9, Node.js 22.22+ ou 24.
 
+Toutes les commandes Java se lancent **depuis la racine du dépôt** : c'est là que l'application lit le `.env` et crée `data/db.sqlite3`.
+
 ```bash
 cp .env.example .env              # DEBUG=true, mails dans le journal
-cd backend
-mvn -q package -DskipTests
-java -jar target/scout-materiel.jar creer-admin chef chef@exemple.fr
-java -jar target/scout-materiel.jar import-nomenclature ../chemin/nomenclature.xlsx
-java -jar target/scout-materiel.jar      # API sur http://127.0.0.1:8000
+mvn -q -f backend/pom.xml package -DskipTests
+java -jar backend/target/scout-materiel.jar creer-admin chef chef@exemple.fr
+java -jar backend/target/scout-materiel.jar import-nomenclature chemin/nomenclature.xlsx
+java -jar backend/target/scout-materiel.jar      # API sur http://127.0.0.1:8000
 ```
 
 Dans un autre terminal :
