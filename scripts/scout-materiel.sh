@@ -9,12 +9,10 @@ set -e
 DIR="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$DIR"
 
-# Réglages du .env (systemd les fournit déjà ; utile pour les commandes lancées à la main)
-if [ -f .env ]; then
-    set -a
-    # shellcheck disable=SC1091
-    . ./.env
-    set +a
+# Le .env n'est pas un script shell (« < > » de DEFAULT_FROM_EMAIL, espaces du mot de passe
+# Gmail) : Java le lit lui-même, on n'en extrait ici que la mémoire de la JVM.
+if [ -z "$JVM_MAX_MEMORY" ] && [ -f .env ]; then
+    JVM_MAX_MEMORY="$(sed -n 's/^JVM_MAX_MEMORY=//p' .env | tr -d '"' | tr -d "'" | tr -d ' \r')"
 fi
 export DATABASE_PATH="${DATABASE_PATH:-$DIR/data/db.sqlite3}"
 export BACKUP_DIR="${BACKUP_DIR:-$DIR/data/backups}"
