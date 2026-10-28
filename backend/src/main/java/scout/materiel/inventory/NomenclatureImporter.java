@@ -81,7 +81,7 @@ public class NomenclatureImporter {
                 doubtful.forEach(d -> out.append("  ").append(d).append('\n'));
             }
             warnings.forEach(w -> out.append(w).append('\n'));
-            return out.append("Import terminé.").toString();
+            return out.append(dryRun ? "Simulation terminée : relancez sans --dry-run pour enregistrer." : "Import terminé.").toString();
         }
     }
 
