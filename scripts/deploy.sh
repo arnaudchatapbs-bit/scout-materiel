@@ -26,7 +26,9 @@ fi
 echo "→ Recherche de la dernière version"
 RELEASE="$(curl -fsSL --retry 3 ${AUTH:+-H "$AUTH"} "https://api.github.com/repos/$REPO/releases/latest")"
 TAG="$(printf '%s' "$RELEASE" | sed -n 's/.*"tag_name": *"\([^"]*\)".*/\1/p' | head -1)"
-ASSET_URL="$(printf '%s' "$RELEASE" | tr ',' '\n' | grep -B3 "\"name\": *\"$ASSET\"" | sed -n 's/.*"url": *"\([^"]*\)".*/\1/p' | head -1)"
+# L'API renvoie un champ par ligne : on recolle tout avant de couper aux virgules, sinon
+# « url » se retrouve hors de portée de grep -B3 (url, id, node_id précèdent name)
+ASSET_URL="$(printf '%s' "$RELEASE" | tr -d '\n' | tr ',' '\n' | grep -B3 "\"name\": *\"$ASSET\"" | sed -n 's/.*"url": *"\([^"]*\)".*/\1/p' | tail -1)"
 if [ -z "$ASSET_URL" ]; then
     echo "Aucune version publiée trouvée : vérifiez l'onglet Actions du dépôt (et GITHUB_TOKEN si le dépôt est privé)."
     exit 1
