@@ -7,6 +7,7 @@ Réécriture de [scout-materiel](https://github.com/arnaudchata-appli/scout-mate
 - **Backend** : Java 11, [Javalin](https://javalin.io) (Jetty), SQLite en JDBC, sans ORM — dossier `backend/`
 - **Front-end** : Angular 22 (composants autonomes, signaux), CSS maison, PWA — dossier `frontend/`
 - **Cible** : Raspberry Pi 1 (ARMv6) avec Java 11 Zulu — voir [DEPLOIEMENT.md](DEPLOIEMENT.md)
+- **Guide de l'utilisateur** (parcours invité et administrateur, avec captures) : [docs/guide-utilisateur.md](docs/guide-utilisateur.md), aussi en [PDF](docs/guide-utilisateur.pdf)
 
 ## Développement
 
