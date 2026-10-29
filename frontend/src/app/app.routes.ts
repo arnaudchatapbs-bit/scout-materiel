@@ -45,6 +45,8 @@ export const routes: Routes = [
             loadComponent: () => import('./pages/admin/accounts').then((m) => m.Accounts) },
           { path: 'comptes/:id', title: 'Compte · Gestion',
             loadComponent: () => import('./pages/admin/account-form').then((m) => m.AccountForm) },
+          { path: 'reglages', title: 'Réglages · Gestion',
+            loadComponent: () => import('./pages/admin/settings').then((m) => m.Settings) },
           { path: 'import', title: 'Import Excel · Gestion',
             loadComponent: () => import('./pages/admin/import').then((m) => m.Import) },
         ],

@@ -1,10 +1,16 @@
 package scout.materiel.loans;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import scout.materiel.Config;
 import scout.materiel.accounts.AccountService;
 import scout.materiel.accounts.Roles;
+import scout.materiel.common.ApiError;
+import scout.materiel.common.Settings;
 import scout.materiel.mail.Mailer;
 
 /**
@@ -17,20 +23,65 @@ public class Notifications {
     private final Config config;
     private final Mailer mailer;
     private final AccountService accounts;
+    private final Settings settings;
 
-    public Notifications(Config config, Mailer mailer, AccountService accounts) {
+    public Notifications(Config config, Mailer mailer, AccountService accounts, Settings settings) {
         this.config = config;
         this.mailer = mailer;
         this.accounts = accounts;
+        this.settings = settings;
     }
 
-    /** ADMIN_EMAILS du .env, sinon les e-mails des comptes administrateurs actifs. */
+    /**
+     * Adresses saisies dans Gestion › Réglages, sinon ADMIN_EMAILS du .env, sinon les e-mails
+     * des comptes administrateurs actifs.
+     */
     public List<String> adminRecipients() {
+        List<String> configured = splitEmails(settings.get(Settings.NOTIFICATION_EMAILS));
+        if (!configured.isEmpty()) {
+            return configured;
+        }
         if (!config.adminEmails.isEmpty()) {
             return config.adminEmails;
         }
         return accounts.listUsers().stream().filter(Roles::isAdmin).map(u -> u.email)
                 .filter(e -> !e.isEmpty()).collect(Collectors.toList());
+    }
+
+    /** Pour l'écran de réglage : adresses saisies, destinataires effectifs et leur origine. */
+    public Map<String, Object> recipientsSettings() {
+        Map<String, Object> view = new HashMap<>();
+        String emails = settings.get(Settings.NOTIFICATION_EMAILS);
+        view.put("emails", emails);
+        view.put("recipients", adminRecipients());
+        view.put("source", !emails.isEmpty() ? "reglage" : !config.adminEmails.isEmpty() ? "env" : "comptes");
+        return view;
+    }
+
+    /** Enregistre les adresses (séparées par des virgules) ; vide = retour au comportement par défaut. */
+    public Map<String, Object> saveRecipients(String text) {
+        List<String> emails = splitEmails(text);
+        List<String> invalid = emails.stream().filter(e -> !AccountService.EMAIL.matcher(e).matches()).collect(Collectors.toList());
+        if (!invalid.isEmpty()) {
+            throw ApiError.invalid((invalid.size() > 1 ? "Adresses e-mail invalides : " : "Adresse e-mail invalide : ")
+                    + String.join(", ", invalid));
+        }
+        // Doublons retirés sans tenir compte de la casse, ordre de saisie conservé
+        Map<String, String> unique = new LinkedHashMap<>();
+        emails.forEach(e -> unique.putIfAbsent(e.toLowerCase(), e));
+        settings.set(Settings.NOTIFICATION_EMAILS, String.join(", ", unique.values()));
+        return recipientsSettings();
+    }
+
+    /** Virgules (ou points-virgules, espaces, retours à la ligne) comme séparateurs. */
+    static List<String> splitEmails(String text) {
+        List<String> emails = new ArrayList<>();
+        for (String part : (text == null ? "" : text).split("[,;\\s]+")) {
+            if (!part.isEmpty()) {
+                emails.add(part);
+            }
+        }
+        return emails;
     }
 
     /** Nouvelle demande : mail à l'admin (à traiter) et confirmation à l'invité. */

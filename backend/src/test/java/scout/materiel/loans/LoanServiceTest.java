@@ -214,6 +214,34 @@ class LoanServiceTest {
         assertEquals(List.of("invite@example.org"), f.services.mailer.outbox.get(1).to);
     }
 
+    @Test
+    void notificationRecipientsSetInManagementWinOverDefaults() {
+        assertEquals(List.of("chef@example.org"), f.services.notifications.adminRecipients(), "par défaut : les comptes admin");
+        f.services.notifications.saveRecipients(" materiel@scouts.fr, Tresorier@scouts.fr ;tresorier@SCOUTS.fr,");
+        assertEquals(List.of("materiel@scouts.fr", "Tresorier@scouts.fr"), f.services.notifications.adminRecipients());
+
+        loans.addToCart(guest, economes, 1);
+        long id = loans.submitCart(guest);
+        f.services.notifications.newRequest(loans.findRequest(id).orElseThrow());
+        assertEquals(List.of("materiel@scouts.fr", "Tresorier@scouts.fr"), f.services.mailer.outbox.get(0).to);
+
+        ApiError error = assertThrows(ApiError.class, () -> f.services.notifications.saveRecipients("ok@scouts.fr, pas-une-adresse"));
+        assertEquals("Adresse e-mail invalide : pas-une-adresse", error.messages.get(0));
+        assertEquals(2, f.services.notifications.adminRecipients().size(), "rien enregistré en cas d'erreur");
+
+        f.services.notifications.saveRecipients("");
+        assertEquals(List.of("chef@example.org"), f.services.notifications.adminRecipients(), "vide : retour au défaut");
+    }
+
+    @Test
+    void envRecipientsUsedWhenNothingSetInManagement() {
+        Fixtures withEnv = new Fixtures(Map.of("ADMIN_EMAILS", "env@scouts.fr"));
+        assertEquals(List.of("env@scouts.fr"), withEnv.services.notifications.adminRecipients());
+        assertEquals("env", withEnv.services.notifications.recipientsSettings().get("source"));
+        withEnv.services.notifications.saveRecipients("ecran@scouts.fr");
+        assertEquals(List.of("ecran@scouts.fr"), withEnv.services.notifications.adminRecipients());
+    }
+
     private static List<Long> ids(List<LoanRequest> requests) {
         return requests.stream().map(r -> r.id).collect(java.util.stream.Collectors.toList());
     }

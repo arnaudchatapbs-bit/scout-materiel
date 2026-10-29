@@ -1,6 +1,7 @@
 package scout.materiel;
 
 import scout.materiel.accounts.AccountService;
+import scout.materiel.common.Settings;
 import scout.materiel.db.Database;
 import scout.materiel.inventory.InventoryService;
 import scout.materiel.loans.LoanService;
@@ -15,6 +16,7 @@ public final class Services implements AutoCloseable {
     public final AccountService accounts;
     public final InventoryService inventory;
     public final LoanService loans;
+    public final Settings settings;
     public final Notifications notifications;
 
     public Services(Config config, Database db) {
@@ -24,7 +26,8 @@ public final class Services implements AutoCloseable {
         this.accounts = new AccountService(db, config, mailer);
         this.inventory = new InventoryService(db);
         this.loans = new LoanService(db);
-        this.notifications = new Notifications(config, mailer, accounts);
+        this.settings = new Settings(db);
+        this.notifications = new Notifications(config, mailer, accounts, settings);
     }
 
     public static Services open(Config config) {

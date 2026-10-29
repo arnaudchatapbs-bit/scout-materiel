@@ -11,7 +11,7 @@ import { PluralPipe } from '../../core/format';
       <div class="page-head">
         <div class="titles">
           <h1>Gestion</h1>
-          <p class="subtitle">Demandes, matériel, catégories et comptes du groupe.</p>
+          <p class="subtitle">Demandes, matériel, catégories, comptes et réglages du groupe.</p>
         </div>
       </div>
       <div class="cards">
@@ -42,6 +42,11 @@ import { PluralPipe } from '../../core/format';
           <span class="card-icon">📥</span>
           <span class="card-title">Import Excel</span>
           <span class="card-text">Mettre à jour l'inventaire depuis la nomenclature (.xlsx).</span>
+        </a>
+        <a routerLink="/gestion/reglages" class="card">
+          <span class="card-icon">⚙️</span>
+          <span class="card-title">Réglages</span>
+          <span class="card-text">Choisir les adresses qui reçoivent les listes de matériel demandées.</span>
         </a>
       </div>
     }

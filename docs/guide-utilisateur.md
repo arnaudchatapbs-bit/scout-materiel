@@ -106,13 +106,13 @@ L'accueil ajoute deux cartes : **Demandes à traiter** (avec le nombre en attent
 
 ![Accueil de l'administrateur](captures/20-accueil-admin.png)
 
-**Gestion** regroupe cinq rubriques : Demandes, Matériel, Catégories, Comptes et Import Excel.
+**Gestion** regroupe six rubriques : Demandes, Matériel, Catégories, Comptes, Import Excel et Réglages.
 
 ![Le menu Gestion](captures/21-gestion.png)
 
 ### Traiter une demande
 
-Chaque nouvelle demande déclenche un e-mail à l'administrateur. Dans **Gestion › Demandes**, trois onglets trient les demandes : **À traiter** (au moins un article en attente), **Réservées** (matériel sorti) et **Toutes**.
+Chaque nouvelle demande déclenche un e-mail aux adresses choisies dans **Gestion › Réglages** (voir plus bas), avec la liste du matériel et son emplacement. Dans **Gestion › Demandes**, trois onglets trient les demandes : **À traiter** (au moins un article en attente), **Réservées** (matériel sorti) et **Toutes**.
 
 ![Onglet À traiter](captures/22-demandes-a-traiter.png)
 
@@ -186,6 +186,18 @@ Sur la fiche d'un compte, **✉️ Renvoyer l'invitation** envoie un nouveau lie
 
 Règles appliquées : les lignes « X » et « Emplacement libre » sont ignorées, les lignes identiques sans référence sont fusionnées (quantités additionnées), et les familles « Alimentation » et « Consommables » sont marquées consommables.
 
+### Choisir qui reçoit les listes de matériel
+
+**Gestion › Réglages** indique à quelles adresses partent les e-mails destinés à l'administrateur : chaque nouvelle demande (avec la liste du matériel demandé et son emplacement), les annulations par les invités et la sauvegarde hebdomadaire de la base.
+
+1. Saisissez une ou plusieurs adresses dans **Adresses e-mail des destinataires**, séparées par une virgule (par exemple celle du responsable matériel et celle du chef de groupe).
+2. Cliquez sur **Enregistrer**. Une adresse mal écrite est signalée et rien n'est enregistré ; les doublons sont retirés.
+3. Le cadre **Destinataires actuels** confirme les adresses utilisées et leur origine.
+
+![Deux destinataires pour les listes de matériel](captures/39-reglages.png)
+
+Si le champ est vide, l'application utilise l'adresse prévue dans la configuration du serveur, ou à défaut l'e-mail des comptes administrateurs. Videz le champ et enregistrez pour revenir à ce fonctionnement. Le réglage prend effet tout de suite, sans redémarrage.
+
 ## 4. Règles à connaître
 
 La règle de base : **disponible = quantité totale − exemplaires réservés**. Une demande en attente ne bloque rien ; seule la décision « Réserver » de l'administrateur retire du matériel du stock disponible.
@@ -206,8 +218,8 @@ Le statut d'une demande se déduit de ses articles : « En attente » tant qu'un
 
 | Événement | Destinataires |
 | --- | --- |
-| Nouvelle demande | L'administrateur, et l'invité (confirmation) |
-| Annulation par l'invité | L'administrateur |
+| Nouvelle demande | Les adresses de **Gestion › Réglages**, et l'invité (confirmation) |
+| Annulation par l'invité | Les adresses de **Gestion › Réglages** |
 | Création de compte ou renvoi d'invitation | La personne invitée (lien valable 7 jours) |
 | Mot de passe oublié | La personne qui l'a demandé |
 | Décisions de l'administrateur | Personne : l'invité consulte **Mes demandes** |
@@ -238,5 +250,7 @@ Un e-mail qui ne part pas (serveur de messagerie indisponible) ne bloque jamais 
 **L'envoi de ma demande est refusé.** Un objet du panier a été réservé entre-temps. Le message indique lequel : baissez la quantité ou retirez-le, puis renvoyez.
 
 **Je veux modifier une demande déjà envoyée.** Annulez les articles en attente et refaites une demande, ou demandez à l'administrateur. Un article déjà réservé ne peut être libéré que par lui.
+
+**Les demandes n'arrivent pas dans la bonne boîte mail.** Ouvrez **Gestion › Réglages** : le cadre **Destinataires actuels** montre les adresses utilisées. Corrigez-les (plusieurs adresses séparées par une virgule) puis enregistrez.
 
 **Installer l'application sur mon téléphone.** Ouvrez le site dans le navigateur, puis « Ajouter à l'écran d'accueil » (menu ⋮ sur Android, bouton Partager sur iPhone). L'icône ouvre le site en plein écran.

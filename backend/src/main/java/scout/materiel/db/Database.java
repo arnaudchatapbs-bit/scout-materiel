@@ -20,7 +20,7 @@ import org.sqlite.SQLiteConfig;
  */
 public final class Database implements AutoCloseable {
     /** Migrations dans l'ordre ; PRAGMA user_version = nombre de migrations appliquées. */
-    private static final String[] MIGRATIONS = {"/db/001_initial.sql"};
+    private static final String[] MIGRATIONS = {"/db/001_initial.sql", "/db/002_settings.sql"};
 
     private final Connection connection;
     private final ReentrantLock lock = new ReentrantLock();

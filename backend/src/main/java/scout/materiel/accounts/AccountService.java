@@ -27,7 +27,7 @@ public class AccountService {
     public static final Duration TOKEN_VALIDITY = Duration.ofDays(7);
     private static final int MAX_FAILURES = 5;
     private static final Duration LOCKOUT = Duration.ofMinutes(15);
-    private static final Pattern EMAIL = Pattern.compile("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
+    public static final Pattern EMAIL = Pattern.compile("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
     private static final Pattern USERNAME = Pattern.compile("^[\\w.@+-]{1,150}$");
     private static final SecureRandom RANDOM = new SecureRandom();
 

@@ -147,3 +147,11 @@ export interface ImportReport {
   doubtful: string[];
   warnings: string[];
 }
+
+export interface NotificationSettings {
+  /** Adresses saisies dans Gestion › Réglages (vide : comportement par défaut). */
+  emails: string;
+  /** Destinataires effectifs des e-mails admin. */
+  recipients: string[];
+  source: 'reglage' | 'env' | 'comptes';
+}

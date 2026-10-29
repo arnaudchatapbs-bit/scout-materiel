@@ -72,9 +72,14 @@ class WebAppTest {
         assertEquals(403, send("GET", "/api/gestion/demandes", guest, null, false).statusCode());
         assertEquals(403, send("GET", "/api/gestion/comptes", guest, null, false).statusCode());
         assertEquals(403, send("POST", "/api/gestion/materiel", guest, "{\"name\":\"x\"}", true).statusCode());
+        assertEquals(403, send("GET", "/api/gestion/reglages", guest, null, false).statusCode());
+        assertEquals(403, send("PUT", "/api/gestion/reglages", guest, "{\"emails\":\"pirate@x.fr\"}", true).statusCode());
 
         String admin = login("chef");
         assertEquals(200, send("GET", "/api/gestion/demandes", admin, null, false).statusCode());
+        HttpResponse<String> saved = send("PUT", "/api/gestion/reglages", admin, "{\"emails\":\"a@scouts.fr, b@scouts.fr\"}", true);
+        assertEquals(200, saved.statusCode(), saved.body());
+        assertTrue(saved.body().contains("\"source\":\"reglage\""), saved.body());
     }
 
     @Test

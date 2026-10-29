@@ -11,7 +11,7 @@ Réécriture de [scout-materiel](https://github.com/arnaudchata-appli/scout-mate
 
 ## Développement
 
-Prérequis : JDK 11 ou plus, Maven 3.9, Node.js 22.22+ ou 24.
+Prérequis : JDK 11 ou plus, Maven 3.9, Node.js 22.22.3+ ou 24.15+.
 
 Toutes les commandes Java se lancent **depuis la racine du dépôt** : c'est là que l'application lit le `.env` et crée `data/db.sqlite3`.
 

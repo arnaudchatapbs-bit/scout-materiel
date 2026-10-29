@@ -315,6 +315,10 @@ public final class WebApp {
             ctx.json(Map.of("invited", services.accounts.sendInvitation(user)));
         });
 
+        app.get("/api/gestion/reglages", ctx -> ctx.json(services.notifications.recipientsSettings()));
+        app.put("/api/gestion/reglages", ctx -> ctx.json(
+                services.notifications.saveRecipients(ctx.bodyAsClass(SettingsForm.class).emails)));
+
         app.post("/api/gestion/import", ctx -> {
             UploadedFile file = ctx.uploadedFile("fichier");
             if (file == null) {
@@ -327,6 +331,10 @@ public final class WebApp {
                 throw ApiError.invalid("Lecture du fichier impossible.");
             }
         });
+    }
+
+    public static class SettingsForm {
+        public String emails;
     }
 
     public static class AccountForm extends AccountService.UserForm {

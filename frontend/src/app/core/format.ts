@@ -1,9 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { LineStatus, RequestStatus } from './models';
 
-/** « 3 disponibles », « 1 disponible ». */
+/** « 3 disponibles », « 1 disponible » ; chaque mot s'accorde : « 2 objets actifs ». */
 export function plural(n: number, word: string): string {
-  return `${n} ${word}${n > 1 ? 's' : ''}`;
+  return `${n} ${n > 1 ? word.replace(/(\S)(?=\s|$)/g, '$1s') : word}`;
 }
 
 @Pipe({ name: 'plural' })

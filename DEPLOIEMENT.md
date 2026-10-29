@@ -111,7 +111,7 @@ nano .env
 | `EMAIL_BACKEND` | `smtp` |
 | `EMAIL_HOST_USER` / `EMAIL_HOST_PASSWORD` | adresse Gmail et **mot de passe d'application** |
 | `DEFAULT_FROM_EMAIL` | `Scout Matériel <adresse@gmail.com>` |
-| `ADMIN_EMAILS` | adresse(s) qui reçoivent les demandes et les sauvegardes |
+| `ADMIN_EMAILS` | adresse(s) qui reçoivent les demandes et les sauvegardes ; remplacées par celles saisies dans Gestion › Réglages |
 
 Puis l'installation (Java 11, dernière version de l'application, service systemd) :
 
@@ -182,7 +182,7 @@ Invitez ensuite les chefs depuis **Gestion → Comptes → Nouveau compte**.
 
 ## 9. Sauvegardes
 
-L'application sauvegarde la base **toute seule chaque nuit** (`BACKUP_TIME`, 3 h 30 par défaut) dans `data/backups/` et garde les 30 dernières. Le **dimanche**, la sauvegarde part aussi par e-mail aux `ADMIN_EMAILS` : c'est la copie hors du Pi. Pas de cron à configurer.
+L'application sauvegarde la base **toute seule chaque nuit** (`BACKUP_TIME`, 3 h 30 par défaut) dans `data/backups/` et garde les 30 dernières. Le **dimanche**, la sauvegarde part aussi par e-mail aux destinataires de Gestion › Réglages (à défaut `ADMIN_EMAILS`) : c'est la copie hors du Pi. Pas de cron à configurer.
 
 Sauvegarde immédiate : `./scripts/scout-materiel.sh sauvegarder` (ajoutez `--email` pour l'envoyer).
 

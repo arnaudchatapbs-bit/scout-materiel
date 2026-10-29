@@ -57,7 +57,7 @@ public final class Backup {
         if (email) {
             List<String> recipients = services.notifications.adminRecipients();
             if (recipients.isEmpty()) {
-                throw new IllegalStateException("Aucun destinataire : renseignez ADMIN_EMAILS ou l'e-mail d'un compte admin.");
+                throw new IllegalStateException("Aucun destinataire : renseignez les adresses dans Gestion › Réglages, ADMIN_EMAILS ou l'e-mail d'un compte admin.");
             }
             services.mailer.deliverWithAttachment(
                     "Scout Matériel — sauvegarde du " + LocalDateTime.now().format(DAY),
