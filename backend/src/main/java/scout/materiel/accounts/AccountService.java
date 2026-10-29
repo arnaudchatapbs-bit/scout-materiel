@@ -167,6 +167,10 @@ public class AccountService {
         User user = userFromToken(token).orElseThrow(() -> ApiError.invalid(
                 "Ce lien n'est plus valable (déjà utilisé ou expiré). Demandez-en un nouveau."));
         setPassword(user, password);
+        // Le lien connecte directement : c'est une connexion comme une autre
+        String now = Instant.now().toString();
+        db.tx(tx -> tx.update("UPDATE users SET last_login = ? WHERE id = ?", now, user.id));
+        user.lastLogin = now;
         return user;
     }
 

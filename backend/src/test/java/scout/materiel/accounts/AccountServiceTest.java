@@ -2,6 +2,7 @@ package scout.materiel.accounts;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -85,6 +86,7 @@ class AccountServiceTest {
         String token = body.substring(body.indexOf("jeton=") + 6).split("\\s")[0];
 
         accounts.resetPassword(token, "mon-nouveau-mot-de-passe");
+        assertNotNull(accounts.findUser(user.id).orElseThrow().lastLogin, "le lien connecte : dernière connexion enregistrée");
         assertEquals("louveteau", accounts.authenticate("louveteau", "mon-nouveau-mot-de-passe").username);
         assertThrows(ApiError.class, () -> accounts.resetPassword(token, "encore-un-autre-mot-de-passe"), "lien à usage unique");
     }
