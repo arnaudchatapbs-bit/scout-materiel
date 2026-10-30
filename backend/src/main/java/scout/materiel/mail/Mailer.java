@@ -100,11 +100,7 @@ public class Mailer {
 
         Session session = Session.getInstance(props);
         MimeMessage message = new MimeMessage(session);
-        try {
-            message.setFrom(new InternetAddress(config.fromEmail, false));
-        } catch (MessagingException e) {
-            throw new MessagingException("DEFAULT_FROM_EMAIL invalide : " + config.fromEmail, e);
-        }
+        message.setFrom(fromAddress(config.fromEmail));
         for (String recipient : recipients) {
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
         }
@@ -118,6 +114,22 @@ public class Mailer {
             Transport.send(message);
         } else {
             Transport.send(message, config.emailUser, config.emailPassword);
+        }
+    }
+
+    /**
+     * Expéditeur « Nom <adresse> ». Le nom lu dans le texte est recopié brut par Jakarta Mail :
+     * on le réencode (RFC 2047), sinon un accent (« Matériel ») donne un en-tête non ASCII que Yahoo refuse.
+     */
+    static InternetAddress fromAddress(String fromEmail) throws MessagingException {
+        try {
+            InternetAddress from = new InternetAddress(fromEmail, false);
+            if (from.getPersonal() != null) {
+                from.setPersonal(from.getPersonal(), StandardCharsets.UTF_8.name());
+            }
+            return from;
+        } catch (MessagingException | java.io.UnsupportedEncodingException e) {
+            throw new MessagingException("DEFAULT_FROM_EMAIL invalide : " + fromEmail, e);
         }
     }
 
