@@ -51,13 +51,15 @@ fi
 if [ "$1" != "--no-restart" ]; then
     echo "→ Redémarrage (une à deux minutes sur un Pi 1)"
     sudo systemctl restart scout-materiel
-    # Caddy sert le front-end depuis ./app/frontend : pas besoin de le redémarrer
     PROFILE=""
     if grep -q '^DUCKDNS_TOKEN=..*' .env 2>/dev/null; then
         PROFILE="--profile internet"
     fi
     # shellcheck disable=SC2086  # PROFILE est vide ou contient deux mots, volontairement non entre guillemets
     docker compose $PROFILE up -d
+    # Caddy doit être recréé : son volume ./app/frontend reste attaché au dossier d'origine, devenu
+    # app.old puis supprimé au déploiement suivant (le site répondait alors 404 partout)
+    docker compose up -d --force-recreate --no-deps caddy
     systemctl --no-pager status scout-materiel | head -5
 fi
 exit 0

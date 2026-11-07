@@ -206,7 +206,7 @@ Après chaque modification poussée sur GitHub :
 cd ~/scout-materiel-java && ./scripts/deploy.sh
 ```
 
-La version précédente reste dans `app.old/` : pour revenir en arrière, `rm -rf app && mv app.old app && sudo systemctl restart scout-materiel`.
+La version précédente reste dans `app.old/` : pour revenir en arrière, `rm -rf app && mv app.old app && sudo systemctl restart scout-materiel && docker compose up -d --force-recreate caddy`.
 
 ## 11. Dépannage
 
