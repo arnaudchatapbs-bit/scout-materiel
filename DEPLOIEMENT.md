@@ -71,7 +71,7 @@ Identique à la version Django (rien à refaire si c'est déjà en place) :
 **Dépôt public** :
 
 ```bash
-git clone https://github.com/arnaudchata-appli/scout-materiel-java.git ~/scout-materiel-java
+git clone https://github.com/arnaudchatapbs-bit/scout-materiel.git ~/scout-materiel-java
 ```
 
 **Dépôt privé** : il faut une clé de déploiement (lecture seule) pour le code, et un jeton pour télécharger les versions.
@@ -85,10 +85,10 @@ Host github-scout-java
   User git
   IdentityFile ~/.ssh/scout_java_deploy
 EOF
-git clone github-scout-java:arnaudchata-appli/scout-materiel-java.git ~/scout-materiel-java
+git clone github-scout-java:arnaudchatapbs-bit/scout-materiel.git ~/scout-materiel-java
 ```
 
-Jeton : GitHub → **Settings → Developer settings → Fine-grained tokens** → accès au seul dépôt `scout-materiel-java`, permission **Contents : Read-only**. Il ira dans `GITHUB_TOKEN` du `.env`.
+Jeton : GitHub → **Settings → Developer settings → Fine-grained tokens** → accès au seul dépôt `scout-materiel`, permission **Contents : Read-only**. Il ira dans `GITHUB_TOKEN` du `.env`.
 
 ## 4. Configurer puis installer
 

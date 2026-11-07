@@ -8,7 +8,7 @@
 {
 set -e
 cd "$(dirname "$0")/.."
-REPO="${GITHUB_REPO:-arnaudchata-appli/scout-materiel-java}"
+REPO="${GITHUB_REPO:-arnaudchatapbs-bit/scout-materiel}"
 ASSET="scout-materiel-pi.tar.gz"
 
 # Jeton GitHub (lecture seule) nécessaire si le dépôt est privé : GITHUB_TOKEN dans .env
